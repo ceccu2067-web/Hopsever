@@ -1,0 +1,52 @@
+using UnityEngine;
+
+public class PlayerLocation : MonoBehaviour
+{
+    public Transform player;       // The local player
+    public Transform[] otherPlayers; // Other players in the game
+    public GameObject markerPrefab;   // UI marker for the radar
+
+    private RectTransform radarRect;
+    private float radarScale = 2f;    // Adjust based on map size
+
+    void Start()
+    {
+        radarRect = GetComponent<RectTransform>();
+    }
+
+    void Update()
+    {
+        foreach (Transform target in otherPlayers)
+        {
+            // Get direction and distance from local player to target
+            Vector3 direction = target.position - player.position;
+            float distance = direction.magnitude;
+
+            // Only show if within radar range (e.g., 50 units)
+            if (distance < 50f)
+            {
+                Vector2 radarPos = new Vector2(direction.x, direction.z) / radarScale;
+                // Clamp to radar bounds
+                radarPos = Vector2.ClampMagnitude(radarPos, radarRect.rect.width / 2f);
+
+                // Update or create marker UI element
+                UpdateMarker(target, radarPos);
+            }
+            else
+            {
+                HideMarker(target);
+            }
+        }
+    }
+
+    void UpdateMarker(Transform target, Vector2 radarPosition)
+    {
+        // Find or instantiate marker for target
+        // Then set its anchored position on radar UI
+    }
+
+    void HideMarker(Transform target)
+    {
+        // Disable marker for that target
+    }
+}
